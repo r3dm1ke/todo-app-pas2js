@@ -1401,6 +1401,11 @@ rtl.module("JS",["System"],function () {
 rtl.module("SysUtils",["System","JS"],function () {
   "use strict";
   var $mod = this;
+  this.IntToStr = function (Value) {
+    var Result = "";
+    Result = "" + Value;
+    return Result;
+  };
   rtl.createClass($mod,"TFormatSettings",pas.System.TObject,function () {
   });
   this.FormatSettings = null;
@@ -1428,14 +1433,97 @@ rtl.module("Web",["System","JS"],function () {
 rtl.module("program",["System","JS","Classes","SysUtils","Web"],function () {
   "use strict";
   var $mod = this;
+  rtl.recNewT($mod,"task",function () {
+    this.name = "";
+    this.completed = false;
+    this.$eq = function (b) {
+      return (this.name === b.name) && (this.completed === b.completed);
+    };
+    this.$assign = function (s) {
+      this.name = s.name;
+      this.completed = s.completed;
+      return this;
+    };
+  });
+  this.newTaskName = "";
+  this.tasks = rtl.arraySetLength(null,$mod.task,101);
+  this.numberOfTasks = 0;
   this.listElement = null;
   this.inputElement = null;
   this.submitButton = null;
+  this.SortByCompleted = function () {
+    var result = rtl.arraySetLength(null,$mod.task,101);
+    var cur = 0;
+    var i = 0;
+    cur = 0;
+    for (var $l1 = 0, $end2 = $mod.numberOfTasks; $l1 <= $end2; $l1++) {
+      i = $l1;
+      if ($mod.tasks[i].completed) {
+        result[cur].$assign($mod.tasks[i]);
+        cur += 1;
+      };
+    };
+    for (var $l3 = 0, $end4 = $mod.numberOfTasks; $l3 <= $end4; $l3++) {
+      i = $l3;
+      if (!$mod.tasks[i].completed) {
+        result[cur].$assign($mod.tasks[i]);
+        cur += 1;
+      };
+    };
+    for (var $l5 = 0, $end6 = $mod.numberOfTasks; $l5 <= $end6; $l5++) {
+      i = $l5;
+      $mod.tasks[i].$assign(result[i]);
+    };
+  };
+  this.Blit = function () {
+    var taskElement = null;
+    var i = 0;
+    function ToggleTask(Event) {
+      var Result = false;
+      var index = 0;
+      index = Math.floor(Event.target["id"]);
+      $mod.tasks[index].completed = !$mod.tasks[index].completed;
+      $mod.Blit();
+      Result = true;
+      return Result;
+    };
+    $mod.SortByCompleted();
+    $mod.listElement.innerHTML = "";
+    for (var $l1 = 0, $end2 = $mod.numberOfTasks - 1; $l1 <= $end2; $l1++) {
+      i = $l1;
+      taskElement = document.createElement("a");
+      taskElement.textContent = $mod.tasks[i].name;
+      taskElement.classList.add("list-group-item");
+      taskElement.classList.add("list-group-item-action");
+      taskElement.setAttribute("id",pas.SysUtils.IntToStr(i));
+      taskElement.addEventListener("click",ToggleTask);
+      if ($mod.tasks[i].completed) taskElement.classList.add("disabled");
+      $mod.listElement.insertBefore(taskElement,$mod.listElement.firstChild);
+    };
+  };
+  this.AddTask = function (Event) {
+    var Result = false;
+    $mod.tasks[$mod.numberOfTasks].name = $mod.newTaskName;
+    $mod.tasks[$mod.numberOfTasks].completed = false;
+    $mod.numberOfTasks += 1;
+    $mod.Blit();
+    Result = true;
+    return Result;
+  };
+  this.OnTextChange = function (Event) {
+    var Result = false;
+    $mod.newTaskName = "" + Event.target["value"];
+    $mod.inputElement.setAttribute("value",$mod.newTaskName);
+    return Result;
+  };
   $mod.$main = function () {
     pas.System.Writeln("Hello world");
     $mod.listElement = document.querySelector("#list");
     $mod.inputElement = document.querySelector("#newTaskInput");
+    $mod.inputElement.addEventListener("input",$mod.OnTextChange);
     $mod.submitButton = document.querySelector("#submitButton");
+    $mod.submitButton.addEventListener("click",$mod.AddTask);
+    $mod.Blit();
   };
 });
 //# sourceMappingURL=Todo.js.map
