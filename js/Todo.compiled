@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Compiler Value="C:\pas2js\bin\pas2js.exe" Date="1322805559"/>
+  <Params Value=" -Tbrowser -Pecmascript5 -MObjFPC -Sc -O1 -l -vewnhibq -FiC:\personal_projects\pas_vs_alpine\pas\js -FuC:\personal_projects\pas_vs_alpine\pas\ -FUC:\personal_projects\pas_vs_alpine\pas\js\ -FEC:\personal_projects\pas_vs_alpine\pas\ -oC:\personal_projects\pas_vs_alpine\pas\Todo.js -Jeutf-8 -Jirtl.js -Jc -Jminclude Todo.pas"/>
+</CONFIG>
